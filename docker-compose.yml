@@ -1,0 +1,55 @@
+services:
+  prosody:
+    image: jitsi/prosody:stable
+    restart: unless-stopped
+    expose:
+      - "5222"
+      - "5347"
+      - "5280"
+    volumes:
+      - ./prosody:/config:Z
+    env_file: [.env]
+    networks:
+      meetnet:
+        aliases:
+          - xmpp.meet.jitsi
+          - auth.meet.jitsi
+          - internal-muc.meet.jitsi
+          - muc.meet.jitsi
+
+  jicofo:
+    image: jitsi/jicofo:stable
+    restart: unless-stopped
+    depends_on: [prosody]
+    volumes:
+      - ./jicofo:/config:Z
+    env_file: [.env]
+    networks: [meetnet]
+
+  jvb:
+    image: jitsi/jvb:stable
+    restart: unless-stopped
+    depends_on: [prosody]
+    ports:
+      - "10000:10000/udp"
+      - "4443:4443/tcp"
+    volumes:
+      - ./jvb:/config:Z
+    env_file: [.env]
+    networks: [meetnet]
+
+  web:
+    image: jitsi/web:stable
+    restart: unless-stopped
+    depends_on: [prosody, jicofo, jvb]
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ./web:/config:Z
+      - ./transcripts:/usr/share/jitsi-meet/transcripts:Z
+    env_file: [.env]
+    networks: [meetnet]
+
+networks:
+  meetnet:
+    driver: bridge

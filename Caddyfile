@@ -1,0 +1,12 @@
+meet.your-domain.tld {
+    reverse_proxy 127.0.0.1:8080 {
+        transport http {
+            versions 1.1
+        }
+    }
+    encode gzip
+    header {
+        X-Forwarded-Proto https
+        X-Forwarded-Host {host}
+    }
+}
