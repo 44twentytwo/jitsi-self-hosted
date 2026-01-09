@@ -1,20 +1,18 @@
-## Как разверунть
-### Подготовить DNS A-запись на сервер
-### Забрать репо и запустить
+## How to deploy
+### Prepare a DNS A record pointing to the server
+### Clone the rep
 ```
 git clone https://github.com/44twentytwo/jisti-self-hosted /opt/jitsi
 cd /opt/jitsi
 ```
-
-### Создать .env из шаблона и заполнить
+### Create a `.env` file from the template
 `cp .env.example .env`
-### сгенерируй секреты:
+### Generate secrets:
 ```
 openssl rand -hex 16 | tee /tmp/JICOFO_COMPONENT_SECRET
 openssl rand -hex 16 | tee /tmp/JICOFO_AUTH_PASSWORD
 openssl rand -hex 16 | tee /tmp/JVB_AUTH_PASSWORD
 ```
-### перенеси их в .env (и PUBLIC_URL, DOCKER_HOST_ADDRESS)
 
-### Запустить скрипт
+### Run the script
 `bash scripts/bootstrap.sh`
